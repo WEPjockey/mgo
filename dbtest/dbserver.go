@@ -128,6 +128,7 @@ func (dbs *DBServer) initiateRepl(port int) {
 		"--eval", "rs.initiate()",
 	}
 	shell := exec.Command("mongo", args...)
+	// This should tank on an error.
 	shell.Start()
 }
 
