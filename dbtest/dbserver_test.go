@@ -107,14 +107,12 @@ func (s *S) TestCheckSessionsDisabled(c *C) {
 	server.Wipe()
 }
 
-func (s *S) TestSetEngine(c *C) {
+func (s *S) TestMmapSetEngine(c *C) {
 	status := struct {
 		StorageEngine struct {
 			Name string `bson:"name"`
 		} `bson:"storageEngine"`
 	}{}
-	wtStatus := status
-
 	// mmapv1 (default)
 	var mmapServer dbtest.DBServer
 	mmapServer.SetPath(c.MkDir())
@@ -126,7 +124,14 @@ func (s *S) TestSetEngine(c *C) {
 	err := mSession.Run("serverStatus", &status)
 	c.Assert(err, IsNil)
 	c.Assert(status.StorageEngine.Name, Equals, "mmapv1")
+}
 
+func (s *S) TestWiredTigerSetEngine(c *C) {
+	status := struct {
+		StorageEngine struct {
+			Name string `bson:"name"`
+		} `bson:"storageEngine"`
+	}{}
 	// wiredTiger
 	var wtServer dbtest.DBServer
 	wtServer.SetPath(c.MkDir())
@@ -136,7 +141,7 @@ func (s *S) TestSetEngine(c *C) {
 	wSession := wtServer.Session()
 	defer wSession.Close()
 
-	err = wSession.Run("serverStatus", &wtStatus)
+	err := wSession.Run("serverStatus", &status)
 	c.Assert(err, IsNil)
-	c.Assert(wtStatus.StorageEngine.Name, Equals, "wiredTiger")
+	c.Assert(status.StorageEngine.Name, Equals, "wiredTiger")
 }

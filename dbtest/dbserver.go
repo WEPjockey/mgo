@@ -91,17 +91,16 @@ func (dbs *DBServer) start(repl bool) {
 			dbs.wtCacheSizeGB = 0.1
 		}
 		args = append(args, fmt.Sprintf("--wiredTigerCacheSizeGB=%.2f", dbs.wtCacheSizeGB))
+		if repl {
+			args = append(args, "--replSet=rs0")
+		}
 	case "mmapv1":
 		args = append(args,
 			"--nssize", "1",
 			"--noprealloc",
 			"--smallfiles",
+			"--nojournal",
 		)
-		if repl {
-			args = append(args, "--replSet=rs0")
-		} else {
-			args = append(args, "--nojournal")
-		}
 	}
 
 	dbs.tomb = tomb.Tomb{}
