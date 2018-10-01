@@ -113,6 +113,8 @@ func (dbs *DBServer) start(repl bool) {
 		fmt.Fprintf(os.Stderr, "mongod failed to start: %v\n", err)
 		panic(err)
 	}
+	// Give the db time to settle.  This seems to matter on docker instances.
+	time.Sleep(1 * time.Second)
 	if repl {
 		dbs.initiateRepl(addr.Port)
 	}
