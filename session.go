@@ -45,7 +45,7 @@ import (
 	"sync"
 	"time"
 
-	"github.com/globalsign/mgo/bson"
+	"github.com/homedepot/mgo/bson"
 )
 
 // Mode read preference mode. See Eventual, Monotonic and Strong for details
@@ -108,6 +108,8 @@ type Session struct {
 	queryConfig      query
 	bypassValidation bool
 	slaveOk          bool
+	SessionID        bson.Binary
+	nextTxnNumber    int64
 
 	dialInfo *DialInfo
 }
